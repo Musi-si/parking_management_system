@@ -1,0 +1,45 @@
+import React from 'react'
+import { ParkingSlot } from '../../types'
+import Card from '../ui/Card'
+import Button from '../ui/Button'
+import { CheckCircle, XCircle, Clock } from 'lucide-react'
+
+interface ParkingSlotItemProps {
+  slot: ParkingSlot
+  onSelect: (slot: ParkingSlot) => void
+}
+
+const ParkingSlotItem: React.FC<ParkingSlotItemProps> = ({ slot, onSelect }) => {
+  return (
+    <Card className={`transition-all duration-200 hover:shadow-lg ${slot.status === 'available' ?
+      'border-green-500 border' : 'border-red-500 border'}`}>
+      <div className="flex justify-between items-start">
+        <div>
+          <h3 className="text-lg font-semibold text-gray-200">Slot {slot.name}</h3>
+          <p className="text-gray-400 mt-1">{slot.location?.name} - {slot?.location?.address}</p>
+          <div className="flex items-center mt-2">
+            <Clock size={16} className="text-gray-400 mr-1" />
+            <span className="text-gray-400">${slot.pricePerHour} / hour</span>
+          </div>
+        </div>
+
+        <div className="flex items-center">
+          {slot.status === 'available' ? (
+            <CheckCircle size={24} className="text-green-500" />
+          ) : (
+            <XCircle size={24} className="text-red-500" />
+          )}
+        </div>
+      </div>
+
+      <div className="mt-4">
+        <Button onClick={() => onSelect(slot)} disabled={!(slot.status === 'available')}
+          variant={slot.status === 'available' ? "primary" : "outline"} className="w-full">
+          {slot.status === 'available' ? "Book Now" : "Unavailable"}
+        </Button>
+      </div>
+    </Card>
+  )
+}
+
+export default ParkingSlotItem
