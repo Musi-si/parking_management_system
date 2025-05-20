@@ -1,20 +1,10 @@
 import React, { createContext, useContext, useEffect, useState } from 'react'
-import { ParkingSlot } from '../types'
-import {getSlots as getSlotsAPI, addSlot as addSlotAPI} from '../services/parking'
-
-type SearchCriteria = {
-  name?: string
-  size?: 'small' | 'medium' | 'large'
-  status?: 'available' | 'unavailable'
-  pricePerHour?: number
-  location?: string
-  isLoading: boolean
-}
+import { Parking } from '../types'
+import { getParkings as getParkingsAPI, addParking as addParkingAPI } from '../services/parking'
 
 type ParkingContextType = {
-  slots: ParkingSlot[]
-  addSlot: (slot: Omit<ParkingSlot, 'id'>) => void
-  searchSlots: (criteria: SearchCriteria) => ParkingSlot[]
+  parkings: Parking[]
+  addParking: (parking: Omit<Parking, 'id'>) => Promise<void>
 }
 
 const ParkingContext = createContext<ParkingContextType | null>(null)
@@ -26,32 +16,22 @@ export const useParking = () => {
 }
 
 export const ParkingProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [slots, setSlots] = useState<ParkingSlot[]>([])
+  const [parkings, setParkings] = useState<Parking[]>([])
 
   useEffect(() => {
-    const getSlots = async () => {
-      const data = await getSlotsAPI()
-      setSlots(data)
+    const getParkings = async () => {
+      const data = await getParkingsAPI()
+      setParkings(data)
     }
-    getSlots()
+    getParkings()
   }, [])
 
-  const addSlot = async (slot: Omit<ParkingSlot, 'id'>) => {
-    const newSlot = await addSlotAPI(slot)
-    setSlots(prev => [...prev, newSlot])
-  }
-
-  const searchSlots = (criteria: SearchCriteria): ParkingSlot[] => {
-    return slots.filter(slot => {
-      return (
-        (!criteria.name || slot.name.toLowerCase().includes(criteria.name.toLowerCase()))
-      )
-    })
+  const addParking = async (parking: Omit<Parking, 'id'>) => {
+    const new_parking = await addParkingAPI(parking)
+    setParkings(prev => [...prev, new_parking])
   }
 
   return (
-    <ParkingContext.Provider value={{ slots, addSlot, searchSlots }}>
-      {children}
-    </ParkingContext.Provider>
+    <ParkingContext.Provider value={{ parkings, addParking }}>{children}</ParkingContext.Provider>
   )
 }

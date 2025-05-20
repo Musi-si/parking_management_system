@@ -5,18 +5,18 @@ export interface User {
   role: 'user' | 'admin'
 }
 
-export interface ParkingSlot {
+export interface Slot {
   id: number
   name: string
   size: 'small' | 'medium' | 'large'
   status: 'available' | 'unavailable'
   pricePerHour: number
-  location: number
+  parking: number
 }
 
 export interface Vehicle {}
 
-export interface Loc {
+export interface Parking {
   id: number
   name: string
   address: string
@@ -33,12 +33,12 @@ export interface Booking {
   status: 'pending' | 'completed' | 'cancelled'
 }
 
-// export interface AuthState {
-//   user: User | null
-//   isAuthenticated: boolean
-//   isLoading: boolean
-//   error: string | null
-// }
+export interface AuthState {
+  user: User | null
+  isAuthenticated: boolean
+  isLoading: boolean
+  error: string | null
+}
 
 // export interface ParkingState {
 //   slots: ParkingSlot[]

@@ -1,14 +1,13 @@
 import React from 'react'
 import { ParkingSlot } from '../../types'
-import ParkingSlotItem from './ParkingSlotItem'
+import ParkingSlotItem from './SlotItem'
 
 interface ParkingSlotGridProps {
   slots: ParkingSlot[]
-  onSelectSlot: (slot: ParkingSlot) => void
   isLoading: boolean
 }
 
-const ParkingSlotGrid: React.FC<ParkingSlotGridProps> = ({ slots, onSelectSlot, isLoading }) => {
+const ParkingSlotGrid: React.FC<ParkingSlotGridProps> = ({ slots, isLoading }) => {
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-64">
@@ -32,7 +31,7 @@ const ParkingSlotGrid: React.FC<ParkingSlotGridProps> = ({ slots, onSelectSlot, 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
       {slots.map((slot) => (
-        <ParkingSlotItem key={slot.id} slot={slot} onSelect={onSelectSlot} />
+        <ParkingSlotItem key={slot.id} slot={slot} />
       ))}
     </div>
   )

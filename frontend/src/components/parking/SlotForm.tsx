@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
-import type { ParkingSlot } from '../../types'
+import type { Slot } from '../../types'
 import Button from '../ui/Button'
 import Input from '../ui/Input'
+import { useSlot } from '../../context/SlotContext'
 import { useParking } from '../../context/ParkingContext'
-import { useLoc } from '../../context/LocContext'
 
 interface SlotFormProps {
     onSuccess: () => void
@@ -14,10 +14,10 @@ const sizes = ['small', 'medium', 'large'] as const
 
 const SlotForm: React.FC<SlotFormProps> = ({ onSuccess, onCancel }) => {
     const { addSlot, isLoading } = useParking()
-    const { locs } = useLoc()
+    const { parkings } = useParking()
     
     const [name, setName] = useState('')
-    const [location, setLocation] = useState(0)
+    const [parkingation, setParkingation] = useState(0)
     const [pricePerHour, setPricePerHour] = useState<number>(500)
     const [size, setSize] = useState<ParkingSlot['size']>('medium')
     const [status, setStatus] = useState('available' as ParkingSlot['status'])
@@ -28,7 +28,7 @@ const SlotForm: React.FC<SlotFormProps> = ({ onSuccess, onCancel }) => {
     const validate = () => {
         const errs: Record<string, string> = {}
         if (!name.trim()) errs.name = 'Slot name is required'
-        if (!location) errs.location = 'Location is required'
+        if (!parkingation) errs.parkingation = 'Parkingation is required'
         if (pricePerHour < 500) errs.pricePerHour = 'Price must be > 500'
         if (!status.trim()) errs.status = 'Status is required'
         setErrors(errs)
@@ -42,7 +42,7 @@ const SlotForm: React.FC<SlotFormProps> = ({ onSuccess, onCancel }) => {
         if (!validate()) return
 
         try {
-            const data = { name, location, pricePerHour, size, status }
+            const data = { name, parkingation, pricePerHour, size, status }
             await addSlot(data)
             onSuccess()
         } catch (err) {
@@ -61,12 +61,12 @@ const SlotForm: React.FC<SlotFormProps> = ({ onSuccess, onCancel }) => {
             <Input label="Slot Name" value={name} error={errors.name} onChange={(e) => setName(e.target.value)} />
 
             <div>
-                <label className="block text-gray-200 text-sm font-medium mb-1">Location</label>
-                <select className="w-full rounded bg-gray-800 border border-gray-600 p-2" value={location}
-                    onChange={(e) => setLocation(Number(e.target.value))}>
-                    <option value={''}>Select a location</option>
-                    {locs.map((loc) => (
-                        <option key={loc.id} value={loc.id}>{`${loc.name} - ${loc.address}`}</option>
+                <label className="bparkingk text-gray-200 text-sm font-medium mb-1">Parkingation</label>
+                <select className="w-full rounded bg-gray-800 border border-gray-600 p-2" value={parkingation}
+                    onChange={(e) => setParkingation(Number(e.target.value))}>
+                    <option value={''}>Select a parkingation</option>
+                    {parkings.map((parking) => (
+                        <option key={parking.id} value={parking.id}>{`${parking.name} - ${parking.address}`}</option>
                     ))}
                 </select>
             </div>
@@ -75,7 +75,7 @@ const SlotForm: React.FC<SlotFormProps> = ({ onSuccess, onCancel }) => {
                 onChange={(e) => setPricePerHour(Number(e.target.value))} min={500} step={500} />
 
             <div>
-                <label className="block text-gray-200 text-sm font-medium mb-1">Size</label>
+                <label className="bparkingk text-gray-200 text-sm font-medium mb-1">Size</label>
                 <select className="w-full rounded bg-gray-800 border border-gray-600 p-2" value={size}
                     onChange={(e) => setSize(e.target.value as ParkingSlot['size'])}>
                     {sizes.map((s) => (

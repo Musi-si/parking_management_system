@@ -1,18 +1,16 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider, useAuth } from './context/AuthContext'
-import { ParkingProvider } from './context/ParkingContext'
-import { BookingProvider } from './context/BookingContext'
+import { SlotProvider } from './context/SlotContext'
 import Navbar from './components/layout/Navbar'
 import Footer from './components/layout/Footer'
 import HomePage from './pages/HomePage'
 import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
 import DashboardPage from './pages/DashboardPage'
-import BookingsPage from './pages/BookingsPage'
 import AdminPage from './pages/AdminPage'
 import NotFoundPage from './pages/NotFoundPage'
-import { LocProvider } from './context/LocContext';
+import { ParkingProvider } from './context/ParkingContext';
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { isAuthenticated, isLoading } = useAuth()
@@ -65,7 +63,6 @@ const AppContent: React.FC = () => {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/dashboard" element={<DashboardPage />} />
-            <Route path="/bookings" element={<ProtectedRoute><BookingsPage /></ProtectedRoute>} />
             <Route path="/admin" element={<AdminRoute><AdminPage /></AdminRoute>} />
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
@@ -79,13 +76,11 @@ const AppContent: React.FC = () => {
 function App() {
   return (
     <AuthProvider>
-      <ParkingProvider>
-        <BookingProvider>
-          <LocProvider>
-            <AppContent />
-          </LocProvider>
-        </BookingProvider>
-      </ParkingProvider>
+      <SlotProvider>
+        <ParkingProvider>
+          <AppContent />
+        </ParkingProvider>
+      </SlotProvider>
     </AuthProvider>
   )
 }

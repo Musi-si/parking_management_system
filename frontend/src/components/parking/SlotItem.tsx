@@ -6,10 +6,9 @@ import { CheckCircle, XCircle, Clock } from 'lucide-react'
 
 interface ParkingSlotItemProps {
   slot: ParkingSlot
-  onSelect: (slot: ParkingSlot) => void
 }
 
-const ParkingSlotItem: React.FC<ParkingSlotItemProps> = ({ slot, onSelect }) => {
+const ParkingSlotItem: React.FC<ParkingSlotItemProps> = ({ slot }) => {
   return (
     <Card className={`transition-all duration-200 hover:shadow-lg ${slot.status === 'available' ?
       'border-green-500 border' : 'border-red-500 border'}`}>
@@ -33,8 +32,8 @@ const ParkingSlotItem: React.FC<ParkingSlotItemProps> = ({ slot, onSelect }) => 
       </div>
 
       <div className="mt-4">
-        <Button onClick={() => onSelect(slot)} disabled={!(slot.status === 'available')}
-          variant={slot.status === 'available' ? "primary" : "outline"} className="w-full">
+        <Button disabled={!(slot.status === 'available')} className="w-full"
+          variant={slot.status === 'available' ? "primary" : "outline"}>
           {slot.status === 'available' ? "Book Now" : "Unavailable"}
         </Button>
       </div>

@@ -1,30 +1,25 @@
 import React, { useState, useEffect } from 'react'
-import { useParking } from '../context/ParkingContext'
+import { useSlot} from '../context/SlotContext'
 import { useAuth } from '../context/AuthContext'
-import { ParkingSlot } from '../types'
-import ParkingSlotGrid from '../components/parking/ParkingSlotGrid'
-import Modal from '../components/ui/Modal'
-import BookingForm from '../components/booking/BookingForm'
+import { Slot } from '../types'
+import ParkingSlotGrid from '../components/parking/SlotGrid'
 import Card from '../components/ui/Card'
 import Input from '../components/ui/Input'
 import Select from '../components/ui/Select'
 import { MapPin, Search } from 'lucide-react'
-import { useLoc } from '@/context/LocContext'
-import { Loc } from '../types/index'
+import { useParking } from '@/context/ParkingContext'
+import { Parking } from '../types/index'
 
 const DashboardPage: React.FC = () => {
-  const { slots, isLoading, searchSlots } = useParking()
+  const { slots, isLoading, searchSlots } = useSlot()
   const { isAuthenticated } = useAuth()
 
-  const [selectedSlot, setSelectedSlot] = useState<ParkingSlot | null>(null)
-  const [isBookingModalOpen, setIsBookingModalOpen] = useState(false)
-
   const [searchTerm, setSearchTerm] = useState('')
-  const [filterLocation, setFilterLocation] = useState('')
-  const [filteredSlots, setFilteredSlots] = useState<ParkingSlot[]>([])
+  const [filterParkingation, setFilterParkingation] = useState('')
+  const [filteredSlots, setFilteredSlots] = useState<Slot[]>([])
 
-  const { locs } = useLoc()
-  const locOptions = locs.map((loc: Loc) => ({value: loc.id, label: `${loc.name} - ${loc.address}`}))
+  const { parkings } = useParking()
+  const parkingOptions = parkings.map((parking: Parking) => ({value: parking.id, label: `${parking.name} - ${parking.address}`}))
 
   useEffect(() => {
     const criteria = {
@@ -34,17 +29,6 @@ const DashboardPage: React.FC = () => {
     const results = searchSlots(criteria)
     setFilteredSlots(results)
   }, [slots, searchTerm, searchSlots])
-
-  const handleSelectSlot = (slot: ParkingSlot) => {
-    if (!isAuthenticated) return
-    setSelectedSlot(slot)
-    setIsBookingModalOpen(true)
-  }
-
-  const handleBookingSuccess = () => {
-    setIsBookingModalOpen(false)
-    setSelectedSlot(null)
-  }
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -69,8 +53,8 @@ const DashboardPage: React.FC = () => {
             <div className="absolute p-3">
               <MapPin className="h-5 w-5" />
             </div>
-            <Select className="pl-10" options={locOptions} value={filterLocation}
-              onChange={(e) => setFilterLocation(e.target.value)} />
+            <Select className="pl-10" options={parkingOptions} value={filterParkingation}
+              onChange={(e) => setFilterParkingation(e.target.value)} />
           </div>
         </div>
       </Card>
@@ -90,14 +74,8 @@ const DashboardPage: React.FC = () => {
           </div>
         </div>
 
-        <ParkingSlotGrid slots={filteredSlots} onSelectSlot={handleSelectSlot} isLoading={isLoading} />
+        <ParkingSlotGrid slots={filteredSlots} isLoading={isLoading} />
       </div>
-
-      {selectedSlot && (
-        <Modal isOpen={isBookingModalOpen} onClose={() => setIsBookingModalOpen(false)} title={`Book Parking Slot ${selectedSlot.name}`}>
-          <BookingForm slot={selectedSlot} onSuccess={handleBookingSuccess} onCancel={() => setIsBookingModalOpen(false)} />
-        </Modal>
-      )}
     </div>
   )
 }

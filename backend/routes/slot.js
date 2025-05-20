@@ -1,12 +1,12 @@
 const express = require('express')
 const router = express.Router()
-const controller = require('../controllers/parkingSlot')
+const controller = require('../controllers/slot')
 
 /**
  * @swagger
  * components:
  *   schemas:
- *     ParkingSlot:
+ *     Slot:
  *       type: object
  *       required:
  *         - code
@@ -41,34 +41,34 @@ const controller = require('../controllers/parkingSlot')
 /**
  * @swagger
  * tags:
- *   name: Parking Slots
+ *   name: Slots
  *   description: Manage parking slots
  */
 
 /**
  * @swagger
- * /parking-slots/all:
+ * /slots/all:
  *   get:
- *     summary: Get all parking slots
- *     tags: [Parking Slots]
+ *     summary: Get all slots
+ *     tags: [Slots]
  *     responses:
  *       200:
- *         description: List of parking slots
+ *         description: List of slots
  *         content:
  *           application/json:
  *             schema:
  *               type: array
  *               items:
- *                 $ref: '#/components/schemas/ParkingSlot'
+ *                 $ref: '#/components/schemas/Slot'
  */
 router.get('/all', controller.get_slots)
 
 /**
  * @swagger
- * /parking-slots/{id}:
+ * /slots/{id}:
  *   get:
- *     summary: Get a specific parking slot
- *     tags: [Parking Slots]
+ *     summary: Get a specific slot
+ *     tags: [Slots]
  *     parameters:
  *       - in: path
  *         name: id
@@ -77,11 +77,11 @@ router.get('/all', controller.get_slots)
  *           type: string
  *     responses:
  *       200:
- *         description: Parking slot details
+ *         description: slot details
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/ParkingSlot'
+ *               $ref: '#/components/schemas/Slot'
  */
 router.get('/get/:id', controller.get_slot)
 
@@ -89,17 +89,17 @@ router.get('/get/:id', controller.get_slot)
  * @swagger
  * /parking-slots:
  *   post:
- *     summary: Add a new parking slot
- *     tags: [Parking Slots]
+ *     summary: Add a new slot
+ *     tags: [Slots]
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/ParkingSlot'
+ *             $ref: '#/components/schemas/Slot'
  *     responses:
  *       201:
- *         description: Parking slot created
+ *         description: Slot created
  */
 router.post('/add', controller.add_slot)
 
@@ -148,7 +148,7 @@ router.post('/add', controller.add_slot)
 //  *       content:
 //  *         application/json:
 //  *           schema:
-//  *             $ref: '#/components/schemas/ParkingSlot'
+//  *             $ref: '#/components/schemas/Slot'
 //  *     responses:
 //  *       200:
 //  *         description: Parking slot updated

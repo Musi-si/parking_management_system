@@ -1,21 +1,5 @@
-// const mongoose = require( 'mongoose' )
-
-// MONGO_URI = 'mongodb://127.0.0.1:27017/parking-management-system'
-
-// const db_connection = async() => {
-//     mongoose.connect( MONGO_URI, {
-//         useNewUrlParser: true,
-//         useUnifiedTopology: true
-//     } ).then( () => console.log( 'Connected to mongo successfully ✅' ) )
-//         .catch( e => console.log( 'Connection to mongo failed ❌: ', e ) )
-// }
-
-// module.exports = db_connection
-
-
-
-const { Sequelize } = require('sequelize');
-require('dotenv').config();
+const { Sequelize } = require('sequelize')
+require('dotenv').config()
 
 const sequelize = new Sequelize(
   process.env.DB_NAME,

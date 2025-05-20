@@ -1,22 +1,22 @@
 import * as React from 'react'
 import { CheckCircle, XCircle } from 'lucide-react'
-import { useParking } from '../context/ParkingContext'
+import { useSlot } from '../context/SlotContext'
+import { useParking } from '@/context/ParkingContext'
 import Card from '../components/ui/Card'
 import Button from '../components/ui/Button'
 import Modal from '../components/ui/Modal'
 import SlotForm from '@/components/parking/SlotForm'
-import LocForm from '@/components/parking/LocForm'
-import { useLoc } from '@/context/LocContext'
+import ParkingForm from '@/components/parking/ParkingForm'
 
 const AdminPage: React.FC = () => {
-  const { slots, isLoading } = useParking()
-  const { locs } = useLoc()
+  const { slots, isLoading } = useSlot()
+  const { parkings } = useParking()
   
   const [showSlotForm, setShowSlotForm] = React.useState(false)
-  const [showLocForm, setShowLocForm] = React.useState(false)
+  const [showParkingForm, setShowParkingForm] = React.useState(false)
 
-  const openCreateLoc = () => {
-    setShowLocForm(true)
+  const openCreateParking = () => {
+    setShowParkingForm(true)
   }
 
   const openCreateSlot = () => {
@@ -41,15 +41,15 @@ const AdminPage: React.FC = () => {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="mb-8 text-center">
         <h1 className="text-3xl font-bold text-gray-200">Admin Dashboard</h1>
-        <p className="mt-2 text-gray-400">Manage all parking slots and bookings</p>
+        <p className="mt-2 text-gray-400">Manage all parkings & slots</p>
       </div>
 
       <div className="flex justify-end mb-4 space-x-3">
-        <Button variant="primary" onClick={openCreateLoc}>➕ Add Location</Button>
+        <Button variant="primary" onClick={openCreateParking}>➕ Add Parkings</Button>
       </div>
 
       <div className="mb-8">
-        <Card title="Parking Locations" className='text-center'>
+        <Card title="All Parkings" className='text-center'>
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-900">
@@ -60,13 +60,13 @@ const AdminPage: React.FC = () => {
               </thead>
 
               <tbody className="divide-y divide-gray-200">
-                {locs.map((loc) => (
-                  <tr key={loc.id}>
+                {parkings.map((parking) => (
+                  <tr key={parking.id}>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-medium text-gray-300">{loc.name}</div>
+                      <div className="text-sm font-medium text-gray-300">{parking.name}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-300">{loc.address}</div>
+                      <div className="text-sm text-gray-300">{parking.address}</div>
                     </td>
                   </tr>
                 ))}
@@ -75,9 +75,9 @@ const AdminPage: React.FC = () => {
           </div>
         </Card>
 
-        {showLocForm && (
-          <Modal onClose={() => setShowLocForm(false)} title={'Add Location'} isOpen={showLocForm}>
-            <LocForm onSuccess={() => {setShowLocForm(false)}} onCancel={() => setShowLocForm(false)} />
+        {showParkingForm && (
+          <Modal onClose={() => setShowParkingForm(false)} title={'Add Parkingation'} isOpen={showParkingForm}>
+            <ParkingForm onSuccess={() => {setShowParkingForm(false)}} onCancel={() => setShowParkingForm(false)} />
           </Modal>
         )}
       </div>
@@ -93,7 +93,7 @@ const AdminPage: React.FC = () => {
               <thead className="bg-gray-900">
                 <tr className="text-xs font-medium text-gray-200 uppercase tracking-wider">
                   <th>Slot</th>
-                  <th>Location</th>
+                  <th>Parkingation</th>
                   <th>Price/Hour (RWF)</th>
                   <th>Status</th>
                 </tr>
@@ -106,7 +106,7 @@ const AdminPage: React.FC = () => {
                       <div className="text-sm font-medium text-gray-300">{slot.name}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-300">{slot.location?.name} - {slot.location?.address}</div>
+                      <div className="text-sm text-gray-300">{slot.parkingation?.name} - {slot.parkingation?.address}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm text-gray-300">{slot.pricePerHour}</div>

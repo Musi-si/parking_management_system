@@ -1,31 +1,31 @@
 const express = require('express')
 const router = express.Router()
-const controller = require('../controllers/location')
+const controller = require('../controllers/parking')
 
 /**
  * @swagger
- * /locations/all:
+ * /parkings/all:
  *   get:
- *     summary: Get all locations
- *     tags: [Locations]
+ *     summary: Get all parkings
+ *     tags: [Parkings]
  *     responses:
  *       200:
- *         description: List of locations
+ *         description: List of parkings
  *         content:
  *           application/json:
  *             schema:
  *               type: array
  *               items:
- *                 $ref: '#/components/schemas/Location'
+ *                 $ref: '#/components/schemas/Parking'
  */
-router.get('/all', controller.get_locations)
+router.get('/all', controller.get_parkings)
 
 /**
  * @swagger
- * /locations/add:
+ * /parkings/add:
  *   post:
- *     summary: Create a new parking location
- *     tags: [Locations]
+ *     summary: Create a new parking parking
+ *     tags: [Parkings]
  *     requestBody:
  *       required: true
  *       content:
@@ -46,10 +46,10 @@ router.get('/all', controller.get_locations)
  *                 type: number
  *     responses:
  *       201:
- *         description: Location created
+ *         description: Parking created
  *       400:
  *         description: Validation error
  */
-router.post('/add', controller.add_location)
+router.post('/add', controller.add_parking)
 
 module.exports = router

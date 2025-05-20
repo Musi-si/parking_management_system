@@ -22,7 +22,7 @@ const Select: React.FC<SelectProps> = ({label, options, error, className = '', .
         className={`w-full px-3 py-2 border rounded-lg shadow-sm appearance-none bg-dark-700
           focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary
           ${error ? 'border-red-500' : 'border-gray-300'} ${className}`} {...props}>
-            <option value={''}>Select a location</option>
+            <option value={''}>Select a parking</option>
         {options.map((option) => (
           <option key={option.value} value={option.value} className='focus:primary'>{option.label}</option>
         ))}

@@ -1,20 +1,20 @@
 import React, { useState } from 'react'
-import type { Loc } from '../../types'
 import Button from '../ui/Button'
 import Input from '../ui/Input'
-import { useLoc } from '../../context/LocContext'
+import { Parking } from '../../types/index'
+import { useParking } from '../../context/ParkingContext'
 
-interface LocFormProps {
-    loc?: Loc
+interface ParkingFormProps {
+    parking?: Parking
     onSuccess: () => void
     onCancel: () => void
 }
 
-const LocForm: React.FC<LocFormProps> = ({ loc, onSuccess, onCancel }) => {
-    const { addLoc, isLoading } = useLoc()
+const ParkingForm: React.FC<ParkingFormProps> = ({ parking, onSuccess, onCancel }) => {
+    const { addParking, isLoading } = useParking()
 
-    const [name, setName] = useState(loc?.name ?? '')
-    const [address, setAddress] = useState(loc?.address ?? '')
+    const [name, setName] = useState(parking?.name ?? '')
+    const [address, setAddress] = useState(parking?.address ?? '')
 
     const [errors, setErrors] = useState<{ [k: string]: string }>({})
 
@@ -33,10 +33,10 @@ const LocForm: React.FC<LocFormProps> = ({ loc, onSuccess, onCancel }) => {
         const data = { name, address }
 
         try {
-            await addLoc(data)
+            await addParking(data)
             onSuccess()
         } catch (err) {
-            console.error('Save Loc failed:', err)
+            console.error('Save Parking failed:', err)
         }
     }
 
@@ -48,10 +48,10 @@ const LocForm: React.FC<LocFormProps> = ({ loc, onSuccess, onCancel }) => {
 
             <div className="flex space-x-4">
                 <Button type="button" variant="outline" className="flex-1" onClick={onCancel}>Cancel</Button>
-                <Button type="submit" className="flex-1" isLoading={isLoading}>{'Add Loccation'}</Button>
+                <Button type="submit" className="flex-1" isLoading={isLoading}>{'Add Parking'}</Button>
             </div>
         </form>
     )
 }
 
-export default LocForm
+export default ParkingForm
