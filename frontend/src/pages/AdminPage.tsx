@@ -130,15 +130,11 @@ const AdminPage: React.FC = () => {
                 {slots.map((slot) => (
                   <tr key={slot.id}>
                     <td className="px-6 py-4 text-gray-300">{slot.name}</td>
-                    <td className="px-6 py-4 text-gray-300">
-                      {slot.parking?.name || parkings.find((p) => p.code === slot.parkingId)?.name || 'N/A'}
-                    </td>
+                    <td className="px-6 py-4 text-gray-300">{slot.parking?.name} - {slot.parking?.location}</td>
                     <td className="px-6 py-4">
-                      <span
-                        className={`px-3 inline-flex text-sm leading-5 font-semibold rounded-full ${
-                          slot.status === 'available' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                        }`}
-                      >
+                      <span className={`px-3 inline-flex text-sm leading-5 font-semibold rounded-full ${
+                          slot.status === 'available' ? 'bg-green-200 text-green-800' : 'bg-red-200 text-red-800'
+                        }`}>
                         {slot.status === 'available' ? (
                           <div className="flex items-center">
                             <CheckCircle size={16} className="mr-1" />
