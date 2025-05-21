@@ -1,6 +1,7 @@
 const Vehicle = require('../models/vehicle')
 const Parking = require('../models/parking')
 const { Op } = require('sequelize')
+const transporter = require('../utils/email')
 
 exports.getVehicles = async (req, res) => {
   try {
@@ -103,11 +104,30 @@ exports.carExit = async (req, res) => {
     const totalAmount = hoursParked * parking.pricePerHour
 
     await vehicle.update({ exitDateTime: exitTime.toISOString(), chargedAmount: totalAmount })
-
     await Parking.increment('availableSlots', { where: { id: vehicle.parkingCode } })
 
+    const userEmail = req.user?.email
+
+    let emailSent = false
+    let emailError = null
+
+    if (userEmail) {
+      try {
+        await transporter.sendMail({
+          from: `"Parking Management System" <${process.env.EMAIL_USER}>`,
+          to: userEmail,
+          subject: 'Your Parking Bill',
+          text: `Dear user,\n\nYour bill for plate ${plateNumber}:\nEntry: ${entryTime.toLocaleString()}\nExit: ${exitTime.toLocaleString()}\nHours Parked: ${hoursParked}\nTotal Amount: ${totalAmount}\n\nThank you for using our service!`
+        })
+        emailSent = true
+      } catch (err) {
+        emailError = err.message
+        console.error('Failed to send email:', err)
+      }
+    }
+
     res.json({
-      message: 'Bill calculated, car may now exit.',
+      message: `Bill calculated, car may now exit.${emailSent ? ' Bill has been sent to your email.' : ''}`,
       bill: {
         plateNumber,
         entryTime: entryTime.toISOString(),
@@ -115,6 +135,8 @@ exports.carExit = async (req, res) => {
         hoursParked,
         totalAmount,
       },
+      emailSent,
+      ...(emailError && { emailError })
     })
   } catch (err) {
     console.error(err)

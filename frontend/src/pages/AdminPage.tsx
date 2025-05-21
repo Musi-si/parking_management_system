@@ -179,19 +179,21 @@ const AdminPage: React.FC = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
-                {vehicles.map((vehicle) => (
-                  <tr key={vehicle.id}>
-                    <td className="px-4 py-2">{vehicle.plateNumber}</td>
-                    <td className="px-4 py-2">
-                      {parkings.find((p) => p.code === Number(vehicle.parkingCode))?.name}
-                    </td>
-                    <td className="px-4 py-2">{new Date(vehicle.entryDateTime).toLocaleString()}</td>
-                    <td className="px-4 py-2">
-                      <span
-                        className={`px-2 py-1 rounded-full text-sm font-medium ${'bg-primary-600'}`}>Parked
-                      </span>
-                    </td>
-                  </tr>
+                {vehicles
+                  .filter(vehicle => !vehicle.exitDateTime) // Only vehicles still parked
+                  .map((vehicle) => (
+                    <tr key={vehicle.id}>
+                      <td className="px-4 py-2">{vehicle.plateNumber}</td>
+                      <td className="px-4 py-2">
+                        {parkings.find((p) => p.code === Number(vehicle.parkingCode))?.name}
+                      </td>
+                      <td className="px-4 py-2">{new Date(vehicle.entryDateTime).toLocaleString()}</td>
+                      <td className="px-4 py-2">
+                        <span className="px-2 py-1 rounded-full text-sm font-medium bg-primary-600">
+                          Parked
+                        </span>
+                      </td>
+                    </tr>
                 ))}
               </tbody>
             </table>
