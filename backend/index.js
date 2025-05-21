@@ -6,9 +6,8 @@ const cors = require('cors')
 const { swaggerUi, swaggerSpec } = require('./swagger')
 
 const auth_routes = require('./routes/auth')
-const parking_slot_routes = require('./routes/slot')
-const location_routes = require('./routes/parking')
-const booking_routes = require('./routes/booking')
+const slot_routes = require('./routes/slot')
+const parking_routes = require('./routes/parking')
 const vehicle_routes = require('./routes/vehicle')
 
 const sequelize = require('./config/db')
@@ -20,9 +19,8 @@ app.use(cors())
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup( swaggerSpec ))
 
 app.use('/auth', auth_routes)
-app.use('/parking_slots', parking_slot_routes)
-app.use('/locations', location_routes)
-app.use('/bookings', booking_routes)
+app.use('/slots', slot_routes)
+app.use('/parkings', parking_routes)
 app.use('/vehicles', vehicle_routes)
 
 const PORT = 45000

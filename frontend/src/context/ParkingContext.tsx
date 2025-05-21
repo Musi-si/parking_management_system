@@ -1,10 +1,18 @@
 import React, { createContext, useContext, useEffect, useState } from 'react'
 import { Parking } from '../types'
-import { getParkings as getParkingsAPI, addParking as addParkingAPI } from '../services/parking'
+import { getParkings, addParking as addParkingService } from '../services/parking'
 
 type ParkingContextType = {
   parkings: Parking[]
-  addParking: (parking: Omit<Parking, 'id'>) => Promise<void>
+  isLoading: boolean
+  error: string | null
+  addParking: (parking: {
+    code: number
+    name: string
+    location: string
+    availableSlots?: number
+    pricePerHour: number
+  }) => Promise<void>
 }
 
 const ParkingContext = createContext<ParkingContextType | null>(null)
@@ -17,21 +25,48 @@ export const useParking = () => {
 
 export const ParkingProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [parkings, setParkings] = useState<Parking[]>([])
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    const getParkings = async () => {
-      const data = await getParkingsAPI()
-      setParkings(data)
+    const fetchParkings = async () => {
+      setIsLoading(true)
+      try {
+        const data = await getParkings()
+        setParkings(data)
+        setError(null)
+      } catch (err: any) {
+        setError(err.message || 'Failed to fetch parkings')
+      } finally {
+        setIsLoading(false)
+      }
     }
-    getParkings()
+    fetchParkings()
   }, [])
 
-  const addParking = async (parking: Omit<Parking, 'id'>) => {
-    const new_parking = await addParkingAPI(parking)
-    setParkings(prev => [...prev, new_parking])
+  const addParking = async (parking: {
+    code: number
+    name: string
+    location: string
+    availableSlots?: number
+    pricePerHour: number
+  }) => {
+    setIsLoading(true)
+    try {
+      const data = await addParkingService(parking)
+      setParkings(data) // Backend returns updated list
+      setError(null)
+    } catch (err: any) {
+      setError(err.message || 'Failed to add parking')
+      throw err
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
-    <ParkingContext.Provider value={{ parkings, addParking }}>{children}</ParkingContext.Provider>
+    <ParkingContext.Provider value={{ parkings, isLoading, error, addParking }}>
+      {children}
+    </ParkingContext.Provider>
   )
 }

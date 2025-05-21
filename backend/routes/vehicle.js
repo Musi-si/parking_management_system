@@ -14,7 +14,7 @@ router.use(verifyToken)
 
 /**
  * @swagger
- * /vehicles:
+ * /vehicles/all:
  *   get:
  *     summary: Get all vehicles for the logged-in user
  *     tags: [Vehicles]
@@ -28,7 +28,7 @@ router.get('/all', controller.getVehicles)
 
 /**
  * @swagger
- * /vehicles:
+ * /vehicles/add:
  *   post:
  *     summary: Add a new vehicle
  *     tags: [Vehicles]
@@ -49,70 +49,92 @@ router.get('/all', controller.getVehicles)
  *                 type: string
  *               entryDateTime:
  *                 type: string
+ *                 format: date-time
  *     responses:
  *       201:
  *         description: Vehicle created successfully
  */
 router.post('/add', controller.addVehicle)
 
+/**
+ * @swagger
+ * /vehicles/report/outgoing:
+ *   get:
+ *     summary: Get report of exited vehicles
+ *     tags: [Vehicles]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of vehicles that exited
+ */
 router.get('/report/outgoing', controller.exited)
+
+/**
+ * @swagger
+ * /vehicles/report/entered:
+ *   get:
+ *     summary: Get report of entered vehicles
+ *     tags: [Vehicles]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of vehicles that entered
+ */
 router.get('/report/entered', controller.entered)
+
+/**
+ * @swagger
+ * /vehicles/entry:
+ *   post:
+ *     summary: Mark a vehicle as entered
+ *     tags: [Vehicles]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - plateNumber
+ *               - parkingCode
+ *             properties:
+ *               plateNumber:
+ *                 type: string
+ *               parkingCode:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Vehicle entry recorded
+ */
 router.post('/entry', controller.carEntry)
+
+/**
+ * @swagger
+ * /vehicles/exit:
+ *   post:
+ *     summary: Mark a vehicle as exited and generate bill
+ *     tags: [Vehicles]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - plateNumber
+ *             properties:
+ *               plateNumber:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Vehicle exit recorded and bill generated
+ */
 router.post('/exit', controller.carExit)
 
-
-// /**
-//  * @swagger
-//  * /vehicles/{id}:
-//  *   put:
-//  *     summary: Update a vehicle
-//  *     tags: [Vehicles]
-//  *     security:
-//  *       - bearerAuth: []
-//  *     parameters:
-//  *       - in: path
-//  *         name: id
-//  *         required: true
-//  *         schema:
-//  *           type: string
-//  *     requestBody:
-//  *       content:
-//  *         application/json:
-//  *           schema:
-//  *             type: object
-//  *             properties:
-//  *               plateNumber:
-//  *                 type: string
-//  *               make:
-//  *                 type: string
-//  *               model:
-//  *                 type: string
-//  *               color:
-//  *                 type: string
-//  *     responses:
-//  *       200:
-//  *         description: Vehicle updated successfully
-//  */
-// router.put('/:id', controller.updateVehicle)
-
-// /**
-//  * @swagger
-//  * /vehicles/{id}:
-//  *   delete:
-//  *     summary: Delete a vehicle
-//  *     tags: [Vehicles]
-//  *     security:
-//  *       - bearerAuth: []
-//  *     parameters:
-//  *       - in: path
-//  *         name: id
-//  *         required: true
-//  *         schema:
-//  *           type: string
-//  *     responses:
-//  *       200:
-//  *         description: Vehicle deleted successfully
-//  */
-// router.delete('/:id', controller.deleteVehicle)
-
-// module.exports = router
+module.exports = router

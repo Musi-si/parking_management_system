@@ -1,19 +1,19 @@
 import React, { createContext, useContext, useEffect, useState } from 'react'
 import { Slot } from '../types'
-import {getSlots as getSlotsAPI, addSlot as addSlotAPI} from '../services/slot'
+import { getSlots, addSlot } from '../services/slot'
 
 type SearchCriteria = {
   name?: string
-  size?: 'small' | 'medium' | 'large'
   status?: 'available' | 'unavailable'
-  pricePerHour?: number
-  location?: string
+  parkingId?: number
   isLoading: boolean
 }
 
-type SlotontextType = {
+type SlotContextType = {
   slots: Slot[]
-  addSlot: (slot: Omit<Slot, 'id'>) => void
+  isLoading: boolean
+  error: string | null
+  addSlot: (slot: { name: string, parkingId: number, status?: 'available' | 'unavailable' }) => Promise<void>
   searchSlots: (criteria: SearchCriteria) => Slot[]
 }
 
@@ -27,30 +27,51 @@ export const useSlot = () => {
 
 export const SlotProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [slots, setSlots] = useState<Slot[]>([])
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    const getSlots = async () => {
-      const data = await getSlotsAPI()
-      setSlots(data)
+    const fetchSlots = async () => {
+      setIsLoading(true)
+      try {
+        const data = await getSlots()
+        setSlots(data)
+        setError(null)
+      } catch (err: any) {
+        setError(err.message || 'Failed to fetch slots')
+      } finally {
+        setIsLoading(false)
+      }
     }
-    getSlots()
+    fetchSlots()
   }, [])
 
-  const addSlot = async (slot: Omit<Slot, 'id'>) => {
-    const newSlot = await addSlotAPI(slot)
-    setSlots(prev => [...prev, newSlot])
+  const addSlotHandler = async (slot: { name: string, parkingId: number, status?: 'available' | 'unavailable' }) => {
+    setIsLoading(true)
+    try {
+      const data = await addSlot(slot)
+      setSlots(data)
+      setError(null)
+    } catch (err: any) {
+      setError(err.message || 'Failed to add slot')
+      throw err
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   const searchSlots = (criteria: SearchCriteria): Slot[] => {
-    return slots.filter(slot => {
+    return slots.filter((slot) => {
       return (
-        (!criteria.name || slot.name.toLowerCase().includes(criteria.name.toLowerCase()))
+        (!criteria.name || slot.name.toLowerCase().includes(criteria.name.toLowerCase())) &&
+        (!criteria.status || slot.status === criteria.status) &&
+        (!criteria.parkingId || slot.parkingId === criteria.parkingId)
       )
     })
   }
 
   return (
-    <SlotContext.Provider value={{ slots, addSlot, searchSlots }}>
+    <SlotContext.Provider value={{ slots, isLoading, error, addSlot: addSlotHandler, searchSlots }}>
       {children}
     </SlotContext.Provider>
   )

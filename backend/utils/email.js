@@ -1,5 +1,5 @@
-const nodemailer = require( 'nodemailer' )
-require( 'dotenv' ).config()
+const nodemailer = require('nodemailer')
+require('dotenv').config()
 
 module.exports = nodemailer.createTransport( {
     service: 'Gmail',

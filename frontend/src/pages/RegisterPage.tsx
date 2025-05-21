@@ -66,7 +66,8 @@ const RegisterPage: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    
+    console.log('Form submitted!')
+
     if (!validateForm()) return
 
     if (role === 'admin' && adminPin !== 'PMS-admin') {
@@ -75,9 +76,11 @@ const RegisterPage: React.FC = () => {
     }
 
     try {
-      await register(name, email, password, role);
-      setSuccessMessage('Registration successful! Check your email for verification.');
-    } catch (err) {}
+      await register(name, email, password, role)
+      setSuccessMessage('Registration successful! Check your email for verification.')
+    } catch (err) {
+      console.error('Register error:', err)
+    }
   }
 
   return (
@@ -102,7 +105,7 @@ const RegisterPage: React.FC = () => {
             )}
 
             {error && (
-              <div className="bg-red-500 border-l-4 border-red-400 p-4">
+              <div className="bg-red-300 border-l-4 border-red-400 p-4">
                 <div className="flex">
                   <div className="flex-shrink-0">
                     <svg className="h-5 w-5 text-red-400" xmlns="http://www.w3.org/2000/svg"

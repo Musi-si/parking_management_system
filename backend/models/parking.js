@@ -11,7 +11,7 @@ const Parking = sequelize.define('Parking', {
         allowNull: false
     },
     availableSlots : {
-        type: DataTypes.STRING,
+        type: DataTypes.INTEGER,
     },
     location: {
         type: DataTypes.STRING,
@@ -21,7 +21,7 @@ const Parking = sequelize.define('Parking', {
         type: DataTypes.INTEGER,
         allowNull: false,
         validate: {
-        min: 5000
+        min: 500
     }}
 }, {
     timestamps: true,

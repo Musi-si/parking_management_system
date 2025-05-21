@@ -5,8 +5,8 @@ const Parking = require('./parking')
 const Slot = sequelize.define('Slot', {
   name: {
     type: DataTypes.STRING,
-    allowNull: false,
-    trim: true
+    unique: true,
+    allowNull: false
   },
   parkingId: {
     type: DataTypes.INTEGER,

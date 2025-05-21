@@ -1,86 +1,88 @@
 import React, { createContext, useContext, useState, useEffect } from 'react'
 import { authApi } from '../services/api'
-import { User, AuthState } from '../types'
 
-interface AuthContextType {
+interface User {
+  id: number
+  email: string
+  role: 'admin' | 'user'
+}
+
+interface AuthState {
   user: User | null
   isAuthenticated: boolean
   isLoading: boolean
   error: string | null
-  login: (email: string, password: string) => Promise<string>
-  register: (names: string, email: string, password: string, role: string) => Promise<void>
+  login: (credentials: { email: string, password: string, rememberMe: boolean }) => Promise<void>
   logout: () => void
+  register: (name: string, email: string, password: string, role: string) => Promise<void> // <-- Add this line
 }
 
-const AuthContext = createContext<AuthContextType | null>(null)
+const AuthContext = createContext<AuthState | null>(null)
 
 export const useAuth = () => {
   const context = useContext(AuthContext)
-  if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider')
-  }
+  if (!context) throw new Error('useAuth must be used within AuthProvider')
   return context
 }
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [state, setState] = useState<AuthState>({
-    user: null, isAuthenticated: false, isLoading: false, error: null,
-  })
+  const [user, setUser] = useState<User | null>(null)
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
-  useEffect(() => {
-    const token = localStorage.getItem('token')
-    const storedUser = localStorage.getItem('user')
-    
-    if (token && storedUser) {
-      setState(prev => ({...prev, user: JSON.parse(storedUser), isAuthenticated: true, isLoading: false}))
-    } else {
-      setState(prev => ({ ...prev, isLoading: false }))
-    }
-  }, [])
-
-  const login = async (email: string, password: string): Promise<string> => {
-    setState(prev => ({ ...prev, isLoading: true, error: null }))
-    
+  const login = async ({ email, password }: { email: string, password: string}) => {
+    setIsLoading(true)
+    setError(null)
     try {
-      const response = await authApi.login(email, password)
-      const { token } = response
-      
+      const { token, user: userData } = await authApi.login(email, password)
       localStorage.setItem('token', token)
-
-      const data = await authApi.getProfile()
-      localStorage.setItem('user', JSON.stringify(data))
-      
-      setState({user: data, isAuthenticated: true, isLoading: false, error: null})
-      return data.role
-    } catch (error: any) {
-      setState(prev => ({...prev, isLoading: false, error: error.response?.data?.message || 'Login failed'}))
-      throw error
+      setUser(userData)
+      setIsAuthenticated(true)
+    } catch (err: any) {
+      setError(err.message || 'Failed to log in')
+      throw err
+    } finally {
+      setIsLoading(false)
     }
   }
 
-  const register = async (names: string, email: string, password: string, role: string) => {
-    setState(prev => ({ ...prev, isLoading: true, error: null }))
-    
+  const register = async (name: string, email: string, password: string, role: string) => {
+    setIsLoading(true)
+    setError(null)
     try {
-      await authApi.register(names, email, password, role)
-      setState(prev => ({ ...prev, isLoading: false, error: null }))
-    } catch (error: any) {
-      setState(prev => ({
-        ...prev, isLoading: false, error: error.response?.data?.message || 'Registration failed'
-      }))
-      throw error
+      await authApi.register(name, email, password, role)
+    } catch (err: any) {
+      setError(err.message || 'Failed to register')
+      throw err
+    } finally {
+      setIsLoading(false)
     }
   }
 
   const logout = () => {
     localStorage.removeItem('token')
-    localStorage.removeItem('user')
-    setState({ user: null, isAuthenticated: false, isLoading: false, error: null })
+    setUser(null)
+    setIsAuthenticated(false)
+    setError(null)
   }
 
+  useEffect(() => {
+    const token = localStorage.getItem('token')
+    if (token) {
+      authApi.getProfile()
+        .then((userData) => {
+          setUser(userData)
+          setIsAuthenticated(true)
+        })
+        .catch(() => {
+          localStorage.removeItem('token')
+        })
+    }
+  }, [])
+
   return (
-    <AuthContext.Provider value={{user: state.user, isAuthenticated: state.isAuthenticated,
-      isLoading: state.isLoading, error: state.error, login, register, logout}}>
+    <AuthContext.Provider value={{user, isAuthenticated, isLoading, error, login, logout, register}}>
       {children}
     </AuthContext.Provider>
   )

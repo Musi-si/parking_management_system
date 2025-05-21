@@ -35,9 +35,6 @@ const Navbar: React.FC = () => {
                 <Link to='/dashboard' className='text-gray-200 hover:text-primary-600 px-7 py-2 text-md font-medium'>
                   Dashboard
                 </Link>
-                <Link to='/bookings' className='text-gray-200 hover:text-primary-600 px-7 py-2 text-md font-medium'>
-                  Bookings
-                </Link>
                 {user?.role === 'admin' && (
                   <Link to='/admin' className='text-gray-200 hover:text-primary-600 px-7 py-2 text-md font-medium'>
                     Admin
@@ -87,10 +84,6 @@ const Navbar: React.FC = () => {
                 <Link to='/dashboard' onClick={toggleMenu}
                   className='px-7 py-2 font-medium text-gray-200 hover:text-primary-600'>
                   Dashboard
-                </Link>
-                <Link to='/bookings' onClick={toggleMenu}
-                  className='px-7 py-2 font-medium text-gray-200 hover:text-primary-600'>
-                  Bookings
                 </Link>
                 {user?.role === 'admin' && (
                   <Link to='/admin' onClick={toggleMenu}

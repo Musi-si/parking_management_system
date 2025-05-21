@@ -16,12 +16,15 @@ const get_parkings = async (req, res) => {
 
 const add_parking = async (req, res) => {
   try {
-    const { name, address } = req.body
-    if (!name || !address) {
-      return res.status(400).json({ message: 'Missing required fields' })
+    const { code, name, location, pricePerHour, availableSlots } = req.body
+    if (!code || !name || !location || !pricePerHour) {
+      return res.status(400).json({ 
+        message: 'Missing required fields',
+        required: ['code', 'name', 'location', 'pricePerHour']
+      })
     }
 
-    await Parking.create({ name, address })
+    await Parking.create({ code, name, location, pricePerHour, availableSlots })
     console.log('New parking added successfully')
 
     return get_parkings(req, res)

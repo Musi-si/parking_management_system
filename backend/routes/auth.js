@@ -5,7 +5,7 @@ const { verify_token } = require( '../middlewares/auth' )
 
 /**
  * @swagger
- * /signup:
+ * /auth/signup:
  *   post:
  *     summary: Register a new user
  *     tags: [Auth]
@@ -32,7 +32,7 @@ router.post( '/signup', signup )
 
 /**
  * @swagger
- * /login:
+ * /auth/login:
  *   post:
  *     summary: Log in with email and password
  *     tags: [Auth]
@@ -57,7 +57,7 @@ router.post( '/login', login )
 
 /**
  * @swagger
- * /verify:
+ * /auth/verify:
  *   get:
  *     summary: Verify user email address
  *     tags: [Auth]

@@ -3,34 +3,33 @@ export interface User {
   names: string
   email: string
   role: 'user' | 'admin'
+  isVerified: boolean
 }
 
 export interface Slot {
   id: number
   name: string
-  size: 'small' | 'medium' | 'large'
+  parkingId: number
   status: 'available' | 'unavailable'
-  pricePerHour: number
-  parking: number
+  parking?: Parking
 }
 
-export interface Vehicle {}
+export interface Vehicle {
+  id: number
+  plateNumber: string
+  parkingCode: string | number
+  entryDateTime: string
+  exitDateTime?: string
+  chargedAmount?: number
+  userId: number
+}
 
 export interface Parking {
-  id: number
+  code: number
   name: string
-  address: string
-}
-
-export interface Booking {
-  id: number
-  userId: number
-  slotId: number
-  startTime: string
-  endTime: string
-  totalAmount: number
-  isPaid: boolean
-  status: 'pending' | 'completed' | 'cancelled'
+  location: string
+  availableSlots: number
+  pricePerHour: number
 }
 
 export interface AuthState {
@@ -39,16 +38,3 @@ export interface AuthState {
   isLoading: boolean
   error: string | null
 }
-
-// export interface ParkingState {
-//   slots: ParkingSlot[]
-//   isLoading: boolean
-//   error: string | null
-// }
-
-// export interface BookingState {
-//   bookings: Booking[]
-//   currentBooking: Booking | null
-//   isLoading: boolean
-//   error: string | null
-// }

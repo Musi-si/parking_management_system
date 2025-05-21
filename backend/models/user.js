@@ -1,26 +1,23 @@
 // models/User.js
 const { DataTypes } = require('sequelize');
-const sequelize = require('../config/db');   // ← path to the Sequelize instance
+const sequelize = require('../config/db')
 
 const User = sequelize.define(
   'User',
   {
-    // id (INTEGER, auto-increment, primary key) is added automatically
-
     names: {
       type: DataTypes.STRING,
       allowNull: false,
-      trim: true            // only for readability; Sequelize doesn’t natively trim,
-                            // you can use hooks or validations if you want to enforce it
+      trim: true
     },
 
     email: {
       type: DataTypes.STRING,
       allowNull: false,
       unique: true,
-      lowercase: true,       // this also doesn’t transform automatically—use hooks
+      lowercase: true,
       validate: {
-        isEmail: true        // built-in email validator
+        isEmail: true
       }
     },
 
@@ -45,9 +42,9 @@ const User = sequelize.define(
     }
   },
   {
-    timestamps: true,        // createdAt / updatedAt
-    tableName: 'users'       // explicit table name (optional)
+    timestamps: true,
+    tableName: 'users'
   }
-);
+)
 
-module.exports = User;
+module.exports = User

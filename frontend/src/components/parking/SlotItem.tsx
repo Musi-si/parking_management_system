@@ -1,24 +1,24 @@
 import React from 'react'
-import { ParkingSlot } from '../../types'
+import { Slot } from '../../types'
 import Card from '../ui/Card'
 import Button from '../ui/Button'
 import { CheckCircle, XCircle, Clock } from 'lucide-react'
 
-interface ParkingSlotItemProps {
-  slot: ParkingSlot
+interface SlotItemProps {
+  slot: Slot
 }
 
-const ParkingSlotItem: React.FC<ParkingSlotItemProps> = ({ slot }) => {
+const ParkingSlotItem: React.FC<SlotItemProps> = ({ slot }) => {
   return (
     <Card className={`transition-all duration-200 hover:shadow-lg ${slot.status === 'available' ?
       'border-green-500 border' : 'border-red-500 border'}`}>
       <div className="flex justify-between items-start">
         <div>
           <h3 className="text-lg font-semibold text-gray-200">Slot {slot.name}</h3>
-          <p className="text-gray-400 mt-1">{slot.location?.name} - {slot?.location?.address}</p>
+          <p className="text-gray-400 mt-1">{slot.name} - {slot?.parking?.name} - {slot?.parking?.location}</p>
           <div className="flex items-center mt-2">
             <Clock size={16} className="text-gray-400 mr-1" />
-            <span className="text-gray-400">${slot.pricePerHour} / hour</span>
+            <span className="text-gray-400">${slot.parking?.pricePerHour} / hour</span>
           </div>
         </div>
 
