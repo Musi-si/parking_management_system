@@ -13,9 +13,9 @@ import ParkingForm from '../components/parking/ParkingForm'
 import VehicleForm from '../components/carForms/VehicleForm'
 
 const AdminPage: React.FC = () => {
-  const { slots, isLoading: slotLoading, error: slotError } = useSlot()
-  const { parkings, isLoading: parkingLoading, error: parkingError } = useParking()
-  const { vehicles, isLoading: vehicleLoading, error: vehicleError } = useVehicle()
+  const { slots, isLoading: slotLoading } = useSlot()
+  const { parkings, isLoading: parkingLoading } = useParking()
+  const { vehicles, isLoading: vehicleLoading } = useVehicle()
   const auth = useAuth()
   const user = auth?.user
 
